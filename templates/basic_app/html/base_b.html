@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Add Flat</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'css/master.css' %}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Russo+One&display=swap" rel="stylesheet">
+
+    {% load bootstrap5 %}
+
+    {% bootstrap_css %}
+
+    {% bootstrap_javascript %}
+
+    {% bootstrap_messages %}
+
+    <title>Meow Grocery Store</title>
+</head>
+<body style="background-color:#d2f1fa;">
+<nav class="navbar navbar-expand-lg" style="background-color: #2ff5c0;">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+          <img src="{% static 'images/logo.jpg' %}" alt="Logo" width="120" height="90" class="d-inline-block align-text-top">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="container navbar-nav me-auto mb-2 mb-lg-0">
+
+            <li class="nav-item">
+              <a class="nav-link active lg-col-2" aria-current="page" href="{% url 'basic_app:discount_setup' %}" style="font-family: Russo One;">Настройка Системы</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active lg-col-2" href="#" style="font-family: Russo One;">Статистика</a>
+            </li>
+              <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle active lg-col-2" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-family: Russo One;">
+            Квартиры
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+              <li><a class="dropdown-item" href="{% url 'basic_app:add_flat' %}">Добавить</a></li>
+              <li><a class="dropdown-item" href="#">Смотреть</a></li>
+            </ul>
+          </li>
+          </ul>
+          <form class="container-fluid ">
+            <button type="button" class="btn btn-secondary" style="float: right;">Выйти</button>
+          </form>
+
+        </div>
+      </div>
+    </nav>
+    {% block content %}
+
+    {% endblock %}
+</body>
+</html>

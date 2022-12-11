@@ -1,0 +1,12 @@
+body{
+    height: 100%;
+    background-color: #d2f1fa;
+}
+
+#addbutton{
+    background-color:#5bc4fc;
+    width: 6.0em;
+    height: 3.0em;
+    border-radius: 20%;
+    border: black solid 2px;
+}

@@ -23,7 +23,7 @@ class Flat(models.Model):
 
 
 class Employee(models.Model):
-    employee_id = models.AutoField(primary_key=True)
+    employee = models.AutoField(primary_key=True)
     employee_name = models.CharField(max_length=255)
 
     def __str__(self):
@@ -31,7 +31,7 @@ class Employee(models.Model):
 
 
 class OrderStatus(models.Model):
-    order_status_id = models.AutoField(primary_key=True)
+    order_status = models.AutoField(primary_key=True)
     order_status_name = models.CharField(max_length=255)
 
     def __str__(self):
@@ -39,7 +39,7 @@ class OrderStatus(models.Model):
 
 
 class Client(models.Model):
-    client_id = models.AutoField(primary_key=True)
+    client = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
     discount_card = models.IntegerField(null=True)
     phone_number = models.CharField(max_length=12, null=True)
@@ -52,16 +52,16 @@ class Client(models.Model):
 
 
 class Order(models.Model):
-    order_id = models.AutoField(primary_key=True)
-    client_id = models.ForeignKey(Client, on_delete=models.CASCADE)
+    order = models.AutoField(primary_key=True)
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
     order_ts = models.DateTimeField(auto_now_add=True)
     date_from = models.DateField()
     date_to = models.DateField()
-    flat_id = models.ForeignKey(Flat, on_delete=models.CASCADE)
+    flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     price = models.IntegerField()
     bonuses_used = models.IntegerField()
-    employee_id = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    order_status_id = models.ForeignKey(OrderStatus, on_delete=models.CASCADE)
+    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    order_status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.order_id}'

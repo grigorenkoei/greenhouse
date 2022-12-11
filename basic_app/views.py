@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from basic_app.forms import FlatsForm
+from basic_app.forms import FlatsForm, OrderForm
 from basic_app.models import FlatType
 
 # Create your views here.
@@ -10,7 +10,16 @@ def find_client(request):
 
 
 def add_client(request):
-    return render(request, 'basic_app/html/add_client.html')
+    form = OrderForm()
+    context = {'form': form}
+
+    if request.method == 'POST':
+        form = OrderForm(request.POST)
+        if form.is_valid():
+            print(form.cleaned_data["date_from"])
+            return render(request, 'basic_app/html/add_client.html', context=context)
+
+    return render(request, 'basic_app/html/add_client.html', context=context)
 
 
 def signin(request):

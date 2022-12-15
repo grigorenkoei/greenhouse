@@ -64,7 +64,7 @@ class Order(models.Model):
     order_status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.order_id}'
+        return f'{self.order}'
 
 
 

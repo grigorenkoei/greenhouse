@@ -3,7 +3,12 @@
 
 {% block content %}
     <div class="container" style="margin-top:20px;margin-bottom: 90px; margin-left: auto; width: 50%;">
-        <form method="GET" action="{% url 'basic_app:client_settlement' %}">
+        <form method="GET">
+            {% if form.errors %}
+              <div class="alert alert-danger">
+                {{ form.errors }}
+              </div>
+            {% endif %}
             {% csrf_token %}
         <div class="row">
         <div class="col-lg-6">

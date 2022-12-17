@@ -1,6 +1,8 @@
 from django.forms import ModelForm
 from django import forms
 from basic_app.models import Flat, FlatType, Order
+from django.core.exceptions import ValidationError
+from datetime import date
 
 
 class FlatsForm(ModelForm):
@@ -8,14 +10,16 @@ class FlatsForm(ModelForm):
 
     class Meta:
         model = Flat
-        fields = ['address', 'rent_price_month', 'price']
+        fields = ['address', 'room', 'rent_price_month', 'price']
         labels = {'address': 'Адрес',
+                  'room': 'Квартира',
                   'rent_price_month': 'Стоимость квартиры',
                   'price': 'Цена в день'
                   }
 
         widgets = {
             'address': forms.TextInput(attrs={'placeholder': 'Родимцева, 6', 'class':'col-xs-1'}),
+            'room': forms.TextInput(attrs={'placeholder': '68', 'class':'col-xs-1'}),
             'rent_price_month': forms.NumberInput(attrs={'placeholder': '25000'}),
             'price': forms.NumberInput(attrs={'placeholder': '1700'}),
         }
@@ -38,10 +42,12 @@ class OrderForm(forms.Form):
     date_to = forms.DateField(widget=forms.DateInput(attrs={'type': 'date',
                                                             'class': 'form-control'}))
 
-    discount_card = forms.IntegerField(widget=forms.NumberInput(attrs={'class': 'form-control',
+    discount_card = forms.IntegerField(required=False,
+                                       widget=forms.NumberInput(attrs={'class': 'form-control',
                                                                        'placeholder': '12345678'}))
 
-    phone_number = forms.CharField(max_length=12,
+    phone_number = forms.CharField(required=False,
+                                   max_length=12,
                                    widget=forms.TextInput(attrs={'class': 'form-control',
                                                                  'placeholder': '89228352422'
                                                                  }))
@@ -49,11 +55,27 @@ class OrderForm(forms.Form):
                                widget=forms.NumberInput(attrs={'class': 'form-control',
                                                                'placeholder': '2200'
                                                                }))
-    desc = forms.CharField(max_length=100, label='exampleFormControlInput1',
+    desc = forms.CharField(required=False,
+                           max_length=100, label='exampleFormControlInput1',
                            widget=forms.Textarea(attrs={'class': 'form-control',
                                                         'placeholder': 'Информация о клиенте...',
                                                         'rows': 3,
                                                         'cols': 3
                                                         }))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        date_from = cleaned_data['date_from']
+        date_to = cleaned_data['date_to']
+        curr_date = date.today()
+        if date_from > date_to:
+            raise ValidationError(
+                "Дата заселения не может быть больше даты выселения"
+            )
+        if date_from < curr_date:
+            raise ValidationError(
+                "Дата заселения не может быть в прошлом"
+            )
+
 
 

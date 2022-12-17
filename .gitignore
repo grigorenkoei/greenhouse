@@ -59,3 +59,4 @@ target/
 *migration*
 db.sqlite3
 populate.py
+tasks.txt

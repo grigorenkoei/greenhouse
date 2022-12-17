@@ -16,19 +16,20 @@ class Flat(models.Model):
     address = models.CharField(max_length=255)
     rent_price_month = models.IntegerField()
     price = models.IntegerField()
+    room = models.CharField(max_length=10)
     type = models.ForeignKey(FlatType, on_delete=models.CASCADE)
 
     def __str__(self):
-        return f'{self.address}'
+        return f'{self.address}, кв. {self.room}'
 
-
+"""
 class Employee(models.Model):
     employee = models.AutoField(primary_key=True)
     employee_name = models.CharField(max_length=255)
 
     def __str__(self):
         return f'{self.employee_name}'
-
+"""
 
 class OrderStatus(models.Model):
     order_status = models.AutoField(primary_key=True)
@@ -41,11 +42,10 @@ class OrderStatus(models.Model):
 class Client(models.Model):
     client = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
-    discount_card = models.IntegerField(null=True)
-    phone_number = models.CharField(max_length=12, null=True)
+    discount_card = models.CharField(max_length=30, null=True, unique=True)
+    phone_number = models.CharField(max_length=12, null=True, unique=True)
     desc = models.CharField(max_length=1023, null=True)
     bonuses = models.IntegerField()
-    tester_flag = models.IntegerField()
 
     def __str__(self):
         return f'{self.name}'
@@ -60,7 +60,6 @@ class Order(models.Model):
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     price = models.IntegerField()
     bonuses_used = models.IntegerField()
-    employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     order_status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE)
 
     def __str__(self):

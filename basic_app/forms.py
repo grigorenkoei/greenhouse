@@ -1,8 +1,9 @@
 from django.forms import ModelForm
 from django import forms
-from basic_app.models import Flat, FlatType, Order
+from basic_app.models import Flat, FlatType, Order, OrderStatus
 from django.core.exceptions import ValidationError
 from datetime import date
+from django.db.models import Q
 
 
 class FlatsForm(ModelForm):
@@ -18,8 +19,8 @@ class FlatsForm(ModelForm):
                   }
 
         widgets = {
-            'address': forms.TextInput(attrs={'placeholder': 'Родимцева, 6', 'class':'col-xs-1'}),
-            'room': forms.TextInput(attrs={'placeholder': '68', 'class':'col-xs-1'}),
+            'address': forms.TextInput(attrs={'placeholder': 'Родимцева, 6', 'class': 'col-xs-1'}),
+            'room': forms.TextInput(attrs={'placeholder': '68', 'class': 'col-xs-1'}),
             'rent_price_month': forms.NumberInput(attrs={'placeholder': '25000'}),
             'price': forms.NumberInput(attrs={'placeholder': '1700'}),
         }
@@ -65,17 +66,23 @@ class OrderForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        date_from = cleaned_data['date_from']
-        date_to = cleaned_data['date_to']
         curr_date = date.today()
-        if date_from > date_to:
+        if cleaned_data['date_from'] > cleaned_data['date_to']:
             raise ValidationError(
                 "Дата заселения не может быть больше даты выселения"
             )
-        if date_from < curr_date:
+        if cleaned_data['date_from'] < curr_date:
             raise ValidationError(
                 "Дата заселения не может быть в прошлом"
             )
+        flat = cleaned_data['address']
+        order_status = OrderStatus.objects.get(order_status_name='Active')
 
-
-
+        orders = Order.objects.filter(Q(flat__exact=flat) &
+                                      Q(order_status__exact=order_status) &
+                                      (Q(date_from__range=(cleaned_data['date_from'], cleaned_data['date_to'])) |
+                                       Q(date_to__range=(cleaned_data['date_from'], cleaned_data['date_to']))))
+        if orders:
+            raise ValidationError(
+                "На выбранные даты квартира занята"
+            )

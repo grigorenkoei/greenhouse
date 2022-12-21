@@ -10,5 +10,6 @@ urlpatterns = [
     path('signin/', views.signin, name='signin'),
     path('discount_setup/', views.discount_setup, name='discount_setup'),
     path('add_flat/', views.add_flat, name='add_flat'),
-    path('success/', views.success, name='success')
+    path('success/', views.success, name='success'),
+    path('close/<int:id>', views.close_order, name='close'),
 ]

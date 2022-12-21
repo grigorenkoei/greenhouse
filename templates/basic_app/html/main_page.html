@@ -18,8 +18,8 @@ Watch the video lecture for more info on this! -->
         </div>
         <div class="col">
           <img src="static/images/finduser.png" alt="" width="50%"><br>
-          <form action="findclient.html" method="get">
-            <input type="submit" class="btn btn-success" style="justify-content: center;" value="Найти клиента"></button>
+          <form action="{% url 'basic_app:find_client' %}" method="get">
+            <input type="submit" class="btn btn-success" style="justify-content: center;" value="Поиск клиента"></button>
           </form>
         </div>
       </div>

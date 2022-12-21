@@ -31,6 +31,7 @@ class Employee(models.Model):
         return f'{self.employee_name}'
 """
 
+
 class OrderStatus(models.Model):
     order_status = models.AutoField(primary_key=True)
     order_status_name = models.CharField(max_length=255)

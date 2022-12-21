@@ -43,9 +43,10 @@ class OrderForm(forms.Form):
     date_to = forms.DateField(widget=forms.DateInput(attrs={'type': 'date',
                                                             'class': 'form-control'}))
 
-    discount_card = forms.IntegerField(required=False,
-                                       widget=forms.NumberInput(attrs={'class': 'form-control',
-                                                                       'placeholder': '12345678'}))
+    discount_card = forms.CharField(required=False,
+                                    max_length=30,
+                                    widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                  'placeholder': '12345678'}))
 
     phone_number = forms.CharField(required=False,
                                    max_length=12,
@@ -80,9 +81,26 @@ class OrderForm(forms.Form):
 
         orders = Order.objects.filter(Q(flat__exact=flat) &
                                       Q(order_status__exact=order_status) &
-                                      (Q(date_from__range=(cleaned_data['date_from'], cleaned_data['date_to'])) |
-                                       Q(date_to__range=(cleaned_data['date_from'], cleaned_data['date_to']))))
+                                      (Q(date_from__lte=cleaned_data['date_to']) &
+                                       Q(date_to__gte=cleaned_data['date_from'])))
         if orders:
             raise ValidationError(
                 "На выбранные даты квартира занята"
             )
+
+
+class ClientSearchForm(forms.Form):
+    discount_card = forms.CharField(required=False,
+                                    max_length=30,
+                                    widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                  'placeholder': '12345678'}))
+    phone_number = forms.CharField(required=False,
+                                   max_length=12,
+                                   widget=forms.TextInput(attrs={'class': 'form-control',
+                                                                 'placeholder': '89228352422'
+                                                                 }))
+
+    def clean(self):
+        cleaned_data = super().clean()
+        if bool(cleaned_data.get('phone_number')) == bool(cleaned_data.get('discount_card')):
+            raise ValidationError('Заполните только одно поле')

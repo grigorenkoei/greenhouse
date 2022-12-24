@@ -22,6 +22,35 @@ def close_order(request, id):
     return render(request, 'basic_app/html/success.html')
 
 
+def calculate_bonuses(date_from, date_to, price, bonuses_used=0):
+    delta = date_to - date_from
+    days = delta.days
+    return int((days * price - bonuses_used) * 0.05)
+
+
+def delete_order(request, id):
+    order = Order.objects.select_related('client').get(pk=id)
+    client = order.client
+    all_client_orders = Order.objects.filter(client=client)
+
+    if all_client_orders.count() > 1:
+        bonuses_used = order.bonuses_used
+        bonuses_accrued = calculate_bonuses(order.date_from, order.date_to, order.price, bonuses_used)
+        if order.order_status.order_status_name in ['Suspended', 'Closed']:
+            client.bonuses += bonuses_used - bonuses_accrued
+
+        elif order.order_status.order_status_name == 'Active':
+            client.bonuses += bonuses_used
+
+        client.save()
+        order.delete()
+        return render(request, 'basic_app/html/success.html')
+    else:
+        order.delete()
+        client.delete()
+        return render(request, 'basic_app/html/success.html')
+
+
 def find_client(request):
     form = ClientSearchForm(request.GET or None)
     context = {'form': form}
@@ -62,7 +91,7 @@ def create_order(context):
     else:
         client = get_clients(discount_card=context["discount_card"],
                              phone_number=context["phone_number"]).first()
-        client.desc += '<p>' + context["desc"] + '</p>'
+        client.desc += '\n' + context["desc"]
         client.bonuses -= int(context["bonuses_used"])
         client.save()
 

@@ -23,7 +23,7 @@ Watch the video lecture for more info on this! -->
                     <td>{{ client.phone_number  }}</td>
                     <td>{{ client.discount_card  }}</td>
                     <td>{{ client.bonuses  }}</td>
-                    <td>{{ client.desc  }}</td>
+                    <td>{{ client.desc|linebreaks  }}</td>
         </tbody>
     </table>
 
@@ -65,7 +65,7 @@ Watch the video lecture for more info on this! -->
                         </td>
                     {% endif %}
                         <td>
-                            <form method="POST" action=" {% url 'basic_app:close' id=order.order %} ">
+                            <form method="POST" action=" {% url 'basic_app:delete' id=order.order %} ">
                                 {% csrf_token %}
                                 <input type="submit" class="btn btn-danger" name="checkin" style="margin-left: 10px; margin-bottom: 3px;" value="Удалить">
                             </form>

@@ -12,4 +12,5 @@ urlpatterns = [
     path('add_flat/', views.add_flat, name='add_flat'),
     path('success/', views.success, name='success'),
     path('close/<int:id>', views.close_order, name='close'),
+    path('delete/<int:id>', views.delete_order, name='delete'),
 ]

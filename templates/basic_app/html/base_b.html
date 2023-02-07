@@ -40,18 +40,32 @@
               <a class="nav-link active lg-col-2" href="#" style="font-family: Russo One;">Статистика</a>
             </li>
               <li class="nav-item dropdown">
-          <a class="nav-link dropdown-toggle active lg-col-2" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-family: Russo One;">
-            Квартиры
-          </a>
+            <a class="nav-link dropdown-toggle active lg-col-2" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-family: Russo One;">
+                Квартиры
+            </a>
           <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
               <li><a class="dropdown-item" href="{% url 'basic_app:add_flat' %}">Добавить</a></li>
               <li><a class="dropdown-item" href="#">Смотреть</a></li>
             </ul>
+
           </li>
+
+              {% if user.is_authenticated %}
+                <div class="ms-auto">
+                    <ul class="container navbar-nav">
+                        <a class="nav-link active" href="{% url 'basic_app:logout' %}" style="font-family: Russo One;">Выйти</a>
+                    </ul>
+                  </div>
+              {% else %}
+                  <div class="ms-auto">
+                    <ul class="container navbar-nav mx-auto">
+                        <a class="nav-link active" href="{% url 'basic_app:login' %}" style="font-family: Russo One;">Войти</a>
+                    </ul>
+                  </div>
+              {% endif %}
+
           </ul>
-          <form class="container-fluid ">
-            <button type="button" class="btn btn-secondary" style="float: right;">Выйти</button>
-          </form>
+
 
         </div>
       </div>

@@ -82,7 +82,7 @@ class OrderForm(forms.Form):
         orders = Order.objects.filter(Q(flat__exact=flat) &
                                       Q(order_status__exact=order_status) &
                                       (Q(date_from__lte=cleaned_data['date_to']) &
-                                       Q(date_to__gte=cleaned_data['date_from'])))
+                                       Q(date_to__gt=cleaned_data['date_from'])))
         if orders:
             raise ValidationError(
                 "На выбранные даты квартира занята"
@@ -104,3 +104,4 @@ class ClientSearchForm(forms.Form):
         cleaned_data = super().clean()
         if bool(cleaned_data.get('phone_number')) == bool(cleaned_data.get('discount_card')):
             raise ValidationError('Заполните только одно поле')
+

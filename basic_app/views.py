@@ -3,6 +3,10 @@ from basic_app.forms import FlatsForm, OrderForm, ClientSearchForm
 from basic_app.models import FlatType, Order, Client, OrderStatus, Flat
 from django.db.models import Q
 from django.shortcuts import redirect
+from django.contrib.auth import login, authenticate, logout
+from django.contrib.auth.forms import AuthenticationForm
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
 from django.db import models
 from datetime import datetime
 import pytz
@@ -10,6 +14,7 @@ import pytz
 # Create your views here.
 
 
+@login_required
 def close_order(request, id):
     order = Order.objects.get(pk=id)
     order.order_status = OrderStatus.objects.get(order_status_name="Suspended")
@@ -28,6 +33,7 @@ def calculate_bonuses(date_from, date_to, price, bonuses_used=0):
     return int((days * price - bonuses_used) * 0.05)
 
 
+@login_required
 def delete_order(request, id):
     order = Order.objects.select_related('client').get(pk=id)
     client = order.client
@@ -51,6 +57,7 @@ def delete_order(request, id):
         return render(request, 'basic_app/html/success.html')
 
 
+@login_required
 def find_client(request):
     form = ClientSearchForm(request.GET or None)
     context = {'form': form}
@@ -76,6 +83,7 @@ def get_clients(discount_card, phone_number):
     return Client.objects.filter(Q(discount_card__exact=discount_card) | Q(phone_number__exact=phone_number))
 
 
+@login_required
 def success(request):
     return render(request, 'basic_app/html/success.html')
 
@@ -92,7 +100,10 @@ def create_order(context):
         client = get_clients(discount_card=context["discount_card"],
                              phone_number=context["phone_number"]).first()
         client.desc += '\n' + context["desc"]
-        client.bonuses -= int(context["bonuses_used"])
+        if int(context["bonuses_selected"]) > int(context["all_client_bonuses"]):
+            client.bonuses -= int(context["all_client_bonuses"])
+        else:
+            client.bonuses = int(context["all_client_bonuses"]) - int(context["bonuses_selected"])
         client.save()
 
     order_status = OrderStatus.objects.get(order_status_name='Active')
@@ -107,6 +118,7 @@ def create_order(context):
     order.save()
 
 
+@login_required
 def add_client(request):
     if request.method == "GET":
         form = OrderForm(request.GET or None)
@@ -121,46 +133,64 @@ def add_client(request):
                 "discount_card": request.GET['discount_card'],
                 "phone_number": request.GET['phone_number'],
                 "flag": True,
-                "price": (1 + days) * int(request.GET['price']),
+                "price": days * int(request.GET['price']),
             }
             if not clt:
                 context["name"] = f"{request.GET['first_name']} {request.GET['last_name']}"
                 context["bonuses"] = 0
-                context["final_price"] = (1 + days) * int(request.GET['price'])
-                request.session["bonuses_used"] = 0
                 request.session["is_new_client"] = True
+
             else:
                 context["name"] = clt.first().name
                 context["bonuses"] = clt.first().bonuses
                 context["discount_card"] = clt.first().discount_card
                 context["phone_number"] = clt.first().phone_number
-                sum_price = (1 + days) * int(request.GET['price'])
-                if clt.first().bonuses > sum_price:
-                    request.session["bonuses_used"] = sum_price
-                else:
-                    request.session["bonuses_used"] = clt.first().bonuses
-                context["final_price"] = (1 + days) * int(request.GET['price']) - request.session["bonuses_used"]
                 request.session["is_new_client"] = False
+                request.session["all_client_bonuses"] = clt.first().bonuses
             return render(request, 'basic_app/html/client_settlement.html', context=context)
         else:
             return render(request, 'basic_app/html/add_client.html', context=context)
     else:
         if request.method == 'POST':
             context = request.GET.copy()
+            post_context = request.POST.copy()
+            print(post_context)
+            context["all_client_bonuses"] = request.session["all_client_bonuses"]
+            context["bonuses_selected"] = post_context["bonuses_selected"]
             context["is_new_client"] = request.session["is_new_client"]
-            context["bonuses_used"] = request.session["bonuses_used"]
             create_order(context)
             return redirect('/basic_app/success')
 
 
-def signin(request):
-    return render(request, 'basic_app/html/signin.html')
+def user_login(request):
+    form = AuthenticationForm()
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            password = form.cleaned_data.get('password')
+            user = authenticate(username=username, password=password)
+            if user is not None:
+                login(request, user)
+                return redirect("/")
+            else:
+                return HttpResponse('Invalid login or password')
+        else:
+            return HttpResponse('Invalid login or password')
+    return render(request, 'basic_app/html/login.html', context={'form': form})
 
 
+def user_logout(request):
+    logout(request)
+    return redirect("/")
+
+
+@login_required
 def discount_setup(request):
     return render(request, 'basic_app/html/discount_setup.html')
 
 
+@login_required
 def add_flat(request):
     form = FlatsForm()
     context = {'form': form}

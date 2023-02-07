@@ -29,6 +29,7 @@ SECRET_KEY = 'django-insecure-f5d14-1cptsz_oc(c1yp7qwstclv3ye^a00&t2cd8c6$*-faf8
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+LOGIN_URL = '/basic_app/login'
 
 ALLOWED_HOSTS = []
 
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'basic_app',
     'bootstrap5',
+    'django_crontab'
 ]
 
 MIDDLEWARE = [
@@ -128,3 +130,7 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRONJOBS = [
+    ('*/5 * * * *', 'myapp.cron.my_scheduled_job')
+]

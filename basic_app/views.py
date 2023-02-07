@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from basic_app.forms import FlatsForm, OrderForm, ClientSearchForm
-from basic_app.models import FlatType, Order, Client, OrderStatus, Flat
+from basic_app.models import FlatType, Order, Client, Flat
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.contrib.auth import login, authenticate, logout
@@ -56,7 +56,6 @@ def find_client(request):
 
         context['orders'] = orders
         context['client'] = clt
-        context['active_status'] = OrderStatus.objects.get(order_status_name='Active')
         print(orders)
         return render(request, 'basic_app/html/client_orders.html', context=context)
 
@@ -98,7 +97,6 @@ def create_order(context):
     client.bonuses += add_bonuses
     client.save()
 
-    order_status = OrderStatus.objects.get(order_status_name='Active')
     flat = Flat.objects.get(pk=int(context["address"]))
     order = Order(client=client,
                   date_from=datetime.strptime(context["date_from"], "%Y-%m-%d").date(),
@@ -106,8 +104,7 @@ def create_order(context):
                   flat=flat,
                   price=int(context["price"]),
                   bonuses_used=int(bonuses_used),
-                  bonuses_accrued=add_bonuses,
-                  order_status=order_status)
+                  bonuses_accrued=add_bonuses)
     order.save()
 
 

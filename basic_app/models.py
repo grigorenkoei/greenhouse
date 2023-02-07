@@ -32,14 +32,6 @@ class Employee(models.Model):
 """
 
 
-class OrderStatus(models.Model):
-    order_status = models.AutoField(primary_key=True)
-    order_status_name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f'{self.order_status_name}'
-
-
 class Client(models.Model):
     client = models.AutoField(primary_key=True)
     name = models.CharField(max_length=255)
@@ -62,7 +54,6 @@ class Order(models.Model):
     price = models.IntegerField()
     bonuses_used = models.IntegerField()
     bonuses_accrued = models.IntegerField()
-    order_status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.order}'

@@ -1,6 +1,6 @@
 from django.forms import ModelForm
 from django import forms
-from basic_app.models import Flat, FlatType, Order, OrderStatus
+from basic_app.models import Flat, FlatType
 from django.core.exceptions import ValidationError
 from datetime import date
 from django.db.models import Q
@@ -67,25 +67,9 @@ class OrderForm(forms.Form):
 
     def clean(self):
         cleaned_data = super().clean()
-        curr_date = date.today()
         if cleaned_data['date_from'] > cleaned_data['date_to']:
             raise ValidationError(
                 "Дата заселения не может быть больше даты выселения"
-            )
-        if cleaned_data['date_from'] < curr_date:
-            raise ValidationError(
-                "Дата заселения не может быть в прошлом"
-            )
-        flat = cleaned_data['address']
-        order_status = OrderStatus.objects.get(order_status_name='Active')
-
-        orders = Order.objects.filter(Q(flat__exact=flat) &
-                                      Q(order_status__exact=order_status) &
-                                      (Q(date_from__lte=cleaned_data['date_to']) &
-                                       Q(date_to__gt=cleaned_data['date_from'])))
-        if orders:
-            raise ValidationError(
-                "На выбранные даты квартира занята"
             )
 
 

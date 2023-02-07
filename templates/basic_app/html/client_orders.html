@@ -36,7 +36,7 @@ Watch the video lecture for more info on this! -->
                 <th>Дата выезда</th>
                 <th>Цена за день</th>
                 <th>Бонусов использовано</th>
-                <th>Статус ордера</th>
+                <th>Бонусов начислено</th>
             </tr>
         </thead>
         <tbody>
@@ -47,29 +47,13 @@ Watch the video lecture for more info on this! -->
                     <td>{{ order.date_to  }}</td>
                     <td>{{ order.price  }}</td>
                     <td>{{ order.bonuses_used  }}</td>
-                    <td>{{ order.order_status  }}</td>
-                    {% if order.order_status == active_status %}
-                        <td>
-                            <form method="POST" action=" {% url 'basic_app:close' id=order.order %} ">
+                    <td>{{ order.bonuses_accrued  }}</td>
+                    <td>
+                        <form method="POST" action=" {% url 'basic_app:delete' id=order.order %} ">
                                 {% csrf_token %}
-                                <input type="submit" class="btn btn-secondary" name="checkin" style="background-color: #5bc4fc;margin-left: 10px; margin-bottom: 3px;" value="Закрыть">
-                            </form>
-                        </td>
-
-                    {% else %}
-                        <td>
-                            <form method="POST" action=" {% url 'basic_app:close' id=order.order %} ">
-                                {% csrf_token %}
-                                <input type="submit" class="btn btn-secondary" name="checkin" style="background-color: #5bc4fc;margin-left: 10px; margin-bottom: 3px;" value="Закрыть" disabled>
-                            </form>
-                        </td>
-                    {% endif %}
-                        <td>
-                            <form method="POST" action=" {% url 'basic_app:delete' id=order.order %} ">
-                                {% csrf_token %}
-                                <input type="submit" class="btn btn-danger" name="checkin" style="margin-left: 10px; margin-bottom: 3px;" value="Удалить">
-                            </form>
-                        </td>
+                            <input type="submit" class="btn btn-danger" name="checkin" style="margin-left: 10px; margin-bottom: 3px;" value="Удалить">
+                        </form>
+                    </td>
 
             </tr>
         {% endfor %}

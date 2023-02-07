@@ -14,19 +14,6 @@ import pytz
 # Create your views here.
 
 
-@login_required
-def close_order(request, id):
-    order = Order.objects.get(pk=id)
-    order.order_status = OrderStatus.objects.get(order_status_name="Suspended")
-    delta = order.date_to - order.date_from
-    days = delta.days
-    clt = order.client
-    clt.bonuses += int((days * order.price - order.bonuses_used) * 0.05)
-    clt.save()
-    order.save()
-    return render(request, 'basic_app/html/success.html')
-
-
 def calculate_bonuses(date_from, date_to, price, bonuses_used=0):
     delta = date_to - date_from
     days = delta.days
@@ -42,11 +29,7 @@ def delete_order(request, id):
     if all_client_orders.count() > 1:
         bonuses_used = order.bonuses_used
         bonuses_accrued = calculate_bonuses(order.date_from, order.date_to, order.price, bonuses_used)
-        if order.order_status.order_status_name in ['Suspended', 'Closed']:
-            client.bonuses += bonuses_used - bonuses_accrued
-
-        elif order.order_status.order_status_name == 'Active':
-            client.bonuses += bonuses_used
+        client.bonuses += bonuses_used - bonuses_accrued
 
         client.save()
         order.delete()
@@ -70,6 +53,7 @@ def find_client(request):
             clt = Client.objects.filter(phone_number__exact=request.GET["phone_number"]).first()
 
         orders = Order.objects.filter(client__exact=clt)
+
         context['orders'] = orders
         context['client'] = clt
         context['active_status'] = OrderStatus.objects.get(order_status_name='Active')
@@ -95,16 +79,24 @@ def create_order(context):
                         phone_number=context["phone_number"],
                         desc=context["desc"],
                         bonuses=0)
-        client.save()
+        bonuses_used = 0
     else:
         client = get_clients(discount_card=context["discount_card"],
                              phone_number=context["phone_number"]).first()
         client.desc += '\n' + context["desc"]
         if int(context["bonuses_selected"]) > int(context["all_client_bonuses"]):
-            client.bonuses -= int(context["all_client_bonuses"])
+            bonuses_used = int(context["all_client_bonuses"])
+            client.bonuses -= bonuses_used
         else:
-            client.bonuses = int(context["all_client_bonuses"]) - int(context["bonuses_selected"])
-        client.save()
+            bonuses_used = int(context["bonuses_selected"])
+            client.bonuses = int(context["all_client_bonuses"]) - bonuses_used
+
+    add_bonuses = calculate_bonuses(datetime.strptime(context["date_from"], "%Y-%m-%d").date(),
+                                    datetime.strptime(context["date_to"], "%Y-%m-%d").date(),
+                                    int(context["price"]),
+                                    bonuses_used)
+    client.bonuses += add_bonuses
+    client.save()
 
     order_status = OrderStatus.objects.get(order_status_name='Active')
     flat = Flat.objects.get(pk=int(context["address"]))
@@ -113,7 +105,8 @@ def create_order(context):
                   date_to=datetime.strptime(context["date_to"], "%Y-%m-%d").date(),
                   flat=flat,
                   price=int(context["price"]),
-                  bonuses_used=int(context["bonuses_used"]),
+                  bonuses_used=int(bonuses_used),
+                  bonuses_accrued=add_bonuses,
                   order_status=order_status)
     order.save()
 

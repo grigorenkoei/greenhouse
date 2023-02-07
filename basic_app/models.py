@@ -61,6 +61,7 @@ class Order(models.Model):
     flat = models.ForeignKey(Flat, on_delete=models.CASCADE)
     price = models.IntegerField()
     bonuses_used = models.IntegerField()
+    bonuses_accrued = models.IntegerField()
     order_status = models.ForeignKey(OrderStatus, on_delete=models.CASCADE)
 
     def __str__(self):

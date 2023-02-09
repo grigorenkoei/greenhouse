@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from basic_app.forms import FlatsForm, OrderForm, ClientSearchForm
-from basic_app.models import FlatType, Order, Client, Flat
+from basic_app.models import Order, Client, Flat
 from django.db.models import Q
 from django.shortcuts import redirect
 from django.contrib.auth import login, authenticate, logout
@@ -190,8 +190,6 @@ def add_flat(request):
 
         if form.is_valid():
             flat = form.save(commit=False)
-            type_id = int(request.POST.dict()["type"])
-            flat.type = FlatType.objects.get(pk=type_id)
             flat.save()
             return render(request, 'basic_app/html/add_flat.html', context=context)
     return render(request, 'basic_app/html/add_flat.html', context=context)

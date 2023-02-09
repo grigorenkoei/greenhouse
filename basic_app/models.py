@@ -3,21 +3,12 @@ from django.db import models
 # Create your models here.
 
 
-class FlatType(models.Model):
-    type = models.AutoField(primary_key=True)
-    type_name = models.CharField(max_length=255)
-
-    def __str__(self):
-        return f'{self.type_name}'
-
-
 class Flat(models.Model):
     flat = models.AutoField(primary_key=True)
     address = models.CharField(max_length=255)
     rent_price_month = models.IntegerField()
     price = models.IntegerField()
     room = models.CharField(max_length=10)
-    type = models.ForeignKey(FlatType, on_delete=models.CASCADE)
 
     def __str__(self):
         return f'{self.address}, кв. {self.room}'

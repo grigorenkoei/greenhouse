@@ -26,26 +26,38 @@
 <nav class="navbar navbar-expand-sm me-auto" style="background-color: #2ff5c0;">
       <div class="container-fluid" >
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="navbar-nav me-auto order-0 ">
+          <ul class="navbar-nav">
               <li class="nav-item">
                 <a class="navbar-brand" href="/">
                     <img src="{% static 'images/logo.jpg' %}" alt="Logo" width="120" height="90" class="d-inline-block align-text-top">
                 </a>
               </li>
-
-              <li class="nav-item dropdown">
-                  <a class="nav-link dropdown-toggle active" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-family: Russo One;">
-                      Квартиры
-                  </a>
-                  <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                      <li><a class="dropdown-item" href="{% url 'basic_app:add_flat' %}">Добавить</a></li>
-                      <li><a class="dropdown-item" href="{% url 'basic_app:flats' %}">Смотреть</a></li>
-                  </ul>
-              </li>
-
           </ul>
 
-        </div>
+              <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active lg-col-2" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-family: Russo One;color:black">
+                        Клиенты
+                    </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                    <li><a class="dropdown-item" href="{% url 'basic_app:add_client' %}">Добавить</a></li>
+                    <li><a class="dropdown-item" href="{% url 'basic_app:find_client' %}">Поиск</a></li>
+                </ul>
+
+              </div>
+
+              <div class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle active lg-col-2" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-family: Russo One; color:black">
+                        Квартиры
+                    </a>
+                <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                    <li><a class="dropdown-item" href="{% url 'basic_app:add_flat' %}">Добавить</a></li>
+                    <li><a class="dropdown-item" href="{% url 'basic_app:flats' %}">Список</a></li>
+                </ul>
+
+              </div>
+
+
+
           {% if user.is_authenticated %}
           <div class="ms-auto">
               <ul class="container navbar-nav">
@@ -59,6 +71,7 @@
               </ul>
           </div>
           {% endif %}
+        </div>
       </div>
     </nav>
     {% block content %}

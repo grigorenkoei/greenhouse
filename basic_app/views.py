@@ -101,6 +101,8 @@ def create_order(context):
         client = get_clients(discount_card=context["discount_card"],
                              phone_number=context["phone_number"]).first()
         client.desc += '\n' + context["desc"]
+        if len(client.discount_card) == 0 and len(context["discount_card"]) != 0:
+            client.discount_card = context["discount_card"]
         if int(context["bonuses_selected"]) > int(context["all_client_bonuses"]):
             bonuses_used = int(context["all_client_bonuses"])
             client.bonuses -= bonuses_used

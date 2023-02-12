@@ -6,7 +6,6 @@ from django.db import models
 class Flat(models.Model):
     flat = models.AutoField(primary_key=True)
     address = models.CharField(max_length=255)
-    rent_price_month = models.IntegerField()
     price = models.IntegerField()
     room = models.CharField(max_length=10)
     is_active = models.BooleanField(default=True)

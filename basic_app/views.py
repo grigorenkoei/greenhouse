@@ -49,8 +49,6 @@ def delete_flat(request, id):
         return render(request, 'basic_app/html/success.html')
 
 
-
-
 @login_required()
 def flats(request):
     if request.method == 'GET':
@@ -148,6 +146,7 @@ def add_client(request):
             if not clt:
                 context["name"] = f"{request.GET['first_name']} {request.GET['last_name']}"
                 context["bonuses"] = 0
+                request.session["all_client_bonuses"] = 0
                 request.session["is_new_client"] = True
 
             else:
@@ -164,7 +163,6 @@ def add_client(request):
         if request.method == 'POST':
             context = request.GET.copy()
             post_context = request.POST.copy()
-            print(post_context)
             context["all_client_bonuses"] = request.session["all_client_bonuses"]
             context["bonuses_selected"] = post_context["bonuses_selected"]
             context["is_new_client"] = request.session["is_new_client"]
@@ -211,5 +209,5 @@ def add_flat(request):
         if form.is_valid():
             flat = form.save(commit=False)
             flat.save()
-            return render(request, 'basic_app/html/add_flat.html', context=context)
+            return render(request, 'basic_app/html/success.html', context=context)
     return render(request, 'basic_app/html/add_flat.html', context=context)

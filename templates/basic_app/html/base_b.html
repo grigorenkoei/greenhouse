@@ -22,45 +22,43 @@
     <title>Meow Grocery Store</title>
 </head>
 <body style="background-color:#d2f1fa;">
-<nav class="navbar navbar-expand-lg" style="background-color: #2ff5c0;">
-      <div class="container-fluid">
-        <a class="navbar-brand" href="/">
-          <img src="{% static 'images/logo.jpg' %}" alt="Logo" width="120" height="90" class="d-inline-block align-text-top">
-        </a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+
+<nav class="navbar navbar-expand-sm me-auto" style="background-color: #2ff5c0;">
+      <div class="container-fluid" >
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
-          <ul class="container navbar-nav me-auto mb-2 mb-lg-0">
+          <ul class="navbar-nav me-auto order-0 ">
+              <li class="nav-item">
+                <a class="navbar-brand" href="/">
+                    <img src="{% static 'images/logo.jpg' %}" alt="Logo" width="120" height="90" class="d-inline-block align-text-top">
+                </a>
+              </li>
+
               <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle active lg-col-2" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-family: Russo One;">
-                Квартиры
-            </a>
-          <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-              <li><a class="dropdown-item" href="{% url 'basic_app:add_flat' %}">Добавить</a></li>
-              <li><a class="dropdown-item" href="{% url 'basic_app:flats' %}">Смотреть</a></li>
-            </ul>
-
-          </li>
-
-              {% if user.is_authenticated %}
-                <div class="ms-auto">
-                    <ul class="container navbar-nav">
-                        <a class="nav-link active" href="{% url 'basic_app:logout' %}" style="font-family: Russo One;">Выйти</a>
-                    </ul>
-                  </div>
-              {% else %}
-                  <div class="ms-auto">
-                    <ul class="container navbar-nav mx-auto">
-                        <a class="nav-link active" href="{% url 'basic_app:login' %}" style="font-family: Russo One;">Войти</a>
-                    </ul>
-                  </div>
-              {% endif %}
+                  <a class="nav-link dropdown-toggle active" href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" style="font-family: Russo One;">
+                      Квартиры
+                  </a>
+                  <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                      <li><a class="dropdown-item" href="{% url 'basic_app:add_flat' %}">Добавить</a></li>
+                      <li><a class="dropdown-item" href="{% url 'basic_app:flats' %}">Смотреть</a></li>
+                  </ul>
+              </li>
 
           </ul>
 
-
         </div>
+          {% if user.is_authenticated %}
+          <div class="ms-auto">
+              <ul class="container navbar-nav">
+                  <a class="nav-link active" href="{% url 'basic_app:logout' %}" style="font-family: Russo One;">Выйти</a>
+              </ul>
+          </div>
+          {% else %}
+          <div class="ms-auto">
+              <ul class="container navbar-nav mx-auto">
+                  <a class="nav-link active" href="{% url 'basic_app:login' %}" style="font-family: Russo One;">Войти</a>
+              </ul>
+          </div>
+          {% endif %}
       </div>
     </nav>
     {% block content %}

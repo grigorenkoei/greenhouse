@@ -9,6 +9,7 @@ class Flat(models.Model):
     rent_price_month = models.IntegerField()
     price = models.IntegerField()
     room = models.CharField(max_length=10)
+    is_active = models.BooleanField(default=True)
 
     def __str__(self):
         return f'{self.address}, кв. {self.room}'

@@ -31,7 +31,7 @@ class OrderForm(forms.Form):
                                 widget=forms.TextInput(attrs={'class': 'form-control',
                                                               'aria-label': 'First name'}))
 
-    address = forms.ModelChoiceField(Flat.objects.all(),
+    address = forms.ModelChoiceField(Flat.objects.filter(Q(is_active__exact=True)),
                                      empty_label="Выберите адрес",
                                      widget=forms.Select(attrs={'class': 'form-control'}))
 

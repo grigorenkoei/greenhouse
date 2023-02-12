@@ -49,7 +49,7 @@ Watch the video lecture for more info on this! -->
                     <td>{{ order.bonuses_used  }}</td>
                     <td>{{ order.bonuses_accrued  }}</td>
                     <td>
-                        <form method="POST" action=" {% url 'basic_app:delete' id=order.order %} ">
+                        <form method="POST" action=" {% url 'basic_app:delete_order' id=order.order %} ">
                                 {% csrf_token %}
                             <input type="submit" class="btn btn-danger" name="checkin" style="margin-left: 10px; margin-bottom: 3px;" value="Удалить">
                         </form>

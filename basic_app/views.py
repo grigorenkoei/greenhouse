@@ -41,6 +41,26 @@ def delete_order(request, id):
 
 
 @login_required
+def delete_flat(request, id):
+    if request.method == 'POST':
+        flat = Flat.objects.get(pk=id)
+        flat.is_active = False
+        flat.save()
+        return render(request, 'basic_app/html/success.html')
+
+
+
+
+@login_required()
+def flats(request):
+    if request.method == 'GET':
+        context = {}
+        active_flats = Flat.objects.filter(Q(is_active__exact=True))
+        context["flats"] = active_flats
+        return render(request, 'basic_app/html/flats.html', context=context)
+
+
+@login_required
 def find_client(request):
     form = ClientSearchForm(request.GET or None)
     context = {'form': form}

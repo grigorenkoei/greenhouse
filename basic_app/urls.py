@@ -11,6 +11,8 @@ urlpatterns = [
     path('logout/', views.user_logout, name='logout'),
     #   path('discount_setup/', views.discount_setup, name='discount_setup'),
     path('add_flat/', views.add_flat, name='add_flat'),
+    path('flats/', views.flats, name='flats'),
     path('success/', views.success, name='success'),
-    path('delete/<int:id>', views.delete_order, name='delete'),
+    path('delete_order/<int:id>', views.delete_order, name='delete_order'),
+    path('delete_flat/<int:id>', views.delete_flat, name='delete_flat'),
 ]

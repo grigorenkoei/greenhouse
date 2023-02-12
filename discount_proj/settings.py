@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-f5d14-1cptsz_oc(c1yp7qwstclv3ye^a00&t2cd8c6$*-faf8
 DEBUG = True
 LOGIN_URL = '/basic_app/login'
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['greenhouseoren.pythonanywhere.com']
 
 
 # Application definition
